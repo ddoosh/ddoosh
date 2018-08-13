@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.baedal.config.ObjectMapper">
+
+  <!-- 로그인 할때 비번 가저 오기 -->
+	  <select id="shop_login" parameterType="String" resultType="com.baedal.model.shopVO">
+	  	select * from shop where sid= #{sid}
+	  </select>
+	  
+  <!-- snum 비번가저오기 -->
+	  <select id="shop_optionlogin" parameterType="long" resultType="String">
+	  	select spwd from shop where snum = #{snum}
+	  </select>
+	  
+  <!-- shop에 있는 값불러오기 -->
+	  <select id="shop_updatelist" parameterType="long" resultType="com.baedal.model.shopVO">
+	  	select * from shop where snum = #{snum}
+	  </select>
+ 
+  <!-- 메뉴 불러오기  -->
+	  <select id="shop_menuview" parameterType="String" resultType="com.baedal.model.smenuVO">
+	  	select * from smenu where menu_maker = #{sname}
+	  </select>
+  
+  <!-- 메뉴 지우기 -->
+	  <delete id="shop_delete" parameterType="int">
+	  	delete smenu where menu_num = #{menu_num}
+	  </delete>
+  
+  <!-- 메뉴 넣기 -->
+	  <insert id="menuinsert" parameterType="map">
+	  	insert into smenu values('domino'||smenu_seq.nextval,#{menu_maker},#{menu_name},#{menu_descript},#{menu_price},#{menu_side})
+	  </insert>
+  
+  <!-- 사장님 설정 업데이트 -->
+	  <update id="shop_optionupdate" parameterType="com.baedal.model.shopVO">
+	  	UPDATE shop SET sbossname =#{sbossname}, sname=#{sname}, skind=#{skind}, stel=#{stel}, sshoptel=#{sshoptel}, saddr=#{saddr},semail=#{semail}  WHERE snum = #{snum} 
+	  </update>
+  
+  <!-- 리뷰찾기-->
+	  <select id="shop_Review" parameterType="long" resultType="com.baedal.model.reviewVO">
+	  	select * from review where snum = #{snum} ORDER by CINPUT_DATE desc
+	  </select>
+  
+  <!-- 리뷰 사장님 업데이트 -->
+	  <update id="reviewUpdate" parameterType="com.baedal.model.reviewVO">
+	  	UPDATE review SET scontent = #{scontent}, SINPUT_DATE = SYSDATE WHERE reviewnum = ${reviewnum}
+	  </update>
+	  
+  
+<!-- com.baedal.model.sorderVO -->
+  <!-- 사장님 정산 내역 총매출 -->
+	  <select id="shop_calculateList" parameterType="long" resultType="long">
+	  	select sum(amount) from sorder where snum=#{snum}
+	  </select>
+	  
+  <!-- 사장님 월 매출 -->
+	  <select id="shop_calculatemonth" parameterType="map" resultType="com.baedal.model.sorderVO">
+	  	select * from sorder where snum =#{snum} and ORDER_DATE like '_____${m}%'
+	  </select>
+ 
+  <!-- 주문현황 리스트 -->
+ 	<select id="shop_saleList" parameterType="long" resultType="com.baedal.model.sorderVO">
+ 		select * from sorder where snum =#{snum}
+ 	</select>
+ 	
+  <!-- 주문 디테일리스트 -->
+ 	<select id="shop_order_detail" parameterType="long" resultType="com.baedal.model.sorder_detailVO">
+ 		SELECT * FROM sorder_detail where ORDER_NUM =#{order_num}
+ 	</select>
+ 	
+  <!-- 주문 메뉴 리스트 -->
+ 	<select id="shop_OrderSmenu" parameterType="int" resultType="com.baedal.model.smenuVO">
+ 		select * from smenu where menu_num =#{menu_num}
+ 	</select>
+ 	
+  <!-- 주문 주소 받아오기 -->
+ 	<select id="shop_saleAddr" parameterType="long" resultType="com.baedal.model.sorderVO">
+ 		select * from sorder where order_num =#{order_num}
+ 	</select>
+ 	
+  <!-- 주문상태 변경시키기 -->
+ 	<update id="shop_statchang" parameterType="com.baedal.model.sorderVO">
+ 		UPDATE sorder SET order_state = #{order_state} where order_num = #{order_num}
+ 	</update>
+ 	
+  </mapper>
+  
